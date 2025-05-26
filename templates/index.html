@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upscaler -Image Enhancement</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-magic"></i>
+                <h1>Image Upscaler</h1>
+            </div>
+            <p class="subtitle">Enhance your images with AI-powered upscaling technology</p>
+        </header>
+
+        <main class="main-content">
+            <section class="upload-section" id="uploadSection">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <h3>Drag & Drop Your Image</h3>
+                        <p>or <span class="browse-text">browse files</span></p>
+                        <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.webp" hidden>
+                        <div class="file-types">
+                            <span>Supports: PNG, JPG, JPEG, WebP</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <div class="scale-selector">
+                        <label for="scaleSelect">Upscale Factor:</label>
+                        <select id="scaleSelect">
+                            <option value="2">2x (Double Size)</option>
+                            <option value="3">3x (Triple Size)</option>
+                            <option value="4">4x (Quadruple Size)</option>
+                        </select>
+                    </div>
+                    <button class="upload-btn" id="uploadBtn" disabled>
+                        <i class="fas fa-magic"></i>
+                        Upscale Image
+                    </button>
+                </div>
+            </section>
+
+
+            <section class="progress-section" id="progressSection" style="display: none;">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p class="progress-text" id="progressText">Processing your image...</p>
+                </div>
+            </section>
+
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <h2>Results</h2>
+                <div class="image-comparison">
+                    <div class="image-container">
+                        <h3>Original Image</h3>
+                        <div class="image-wrapper">
+                            <img id="originalImage" alt="Original Image">
+                            <div class="image-info" id="originalInfo"></div>
+                        </div>
+                    </div>
+                    <div class="comparison-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                    <div class="image-container">
+                        <h3>Upscaled Image</h3>
+                        <div class="image-wrapper">
+                            <img id="upscaledImage" alt="Upscaled Image">
+                            <div class="image-info" id="upscaledInfo"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="download-btn" id="downloadBtn">
+                        <i class="fas fa-download"></i>
+                        Download Upscaled Image
+                    </button>
+                    <button class="new-upload-btn" id="newUploadBtn">
+                        <i class="fas fa-plus"></i>
+                        Upload Another Image
+                    </button>
+                </div>
+            </section>
+        </main>
+
+
+        <div class="modal" id="errorModal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" id="closeModal">&times;</span>
+                <h3>Error</h3>
+                <p id="errorMessage"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../static/script.js"></script>
+</body>
+</html>
