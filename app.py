@@ -44,7 +44,11 @@ def upscale_image(image_path, scale_factor):
 
 @app.route('/')
 def index():
-    return render_template('https://vebnox.com/imgups.html')
+    return redirect("https://vebnox.com/imgups.html")
+
+# @app.route('/')
+# def index():
+#     return render_template('https://vebnox.com/imgups.html')
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
