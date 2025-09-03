@@ -1,3 +1,6 @@
+// 🌐 Change this to your Render backend URL
+const BACKEND_URL = "https://your-backend.onrender.com";
+
 class ImageUpscaler {
     constructor() {
         this.selectedFile = null;
@@ -30,7 +33,6 @@ class ImageUpscaler {
         this.uploadArea.addEventListener('click', () => this.fileInput.click());
         this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
 
-
         this.uploadArea.addEventListener('dragover', (e) => this.handleDragOver(e));
         this.uploadArea.addEventListener('dragleave', (e) => this.handleDragLeave(e));
         this.uploadArea.addEventListener('drop', (e) => this.handleDrop(e));
@@ -39,12 +41,10 @@ class ImageUpscaler {
         this.newUploadBtn.addEventListener('click', () => this.resetUploader());
         this.closeModal.addEventListener('click', () => this.hideError());
 
-   
         this.errorModal.addEventListener('click', (e) => {
             if (e.target === this.errorModal) this.hideError();
         });
 
-       
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') this.hideError();
         });
@@ -63,7 +63,7 @@ class ImageUpscaler {
     handleDrop(e) {
         e.preventDefault();
         this.uploadArea.classList.remove('dragover');
-        
+
         const files = e.dataTransfer.files;
         if (files.length > 0) {
             this.handleFileSelect({ target: { files } });
@@ -74,14 +74,12 @@ class ImageUpscaler {
         const file = e.target.files[0];
         if (!file) return;
 
-        
         const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
         if (!allowedTypes.includes(file.type)) {
             this.showError('Please select a valid image file (PNG, JPG, JPEG, or WebP).');
             return;
         }
 
-    
         if (file.size > 16 * 1024 * 1024) {
             this.showError('File size must be less than 16MB.');
             return;
@@ -89,8 +87,6 @@ class ImageUpscaler {
 
         this.selectedFile = file;
         this.uploadBtn.disabled = false;
-        
-       
         this.updateUploadAreaWithFile(file);
     }
 
@@ -129,7 +125,7 @@ class ImageUpscaler {
         try {
             this.animateProgress();
 
-            const response = await fetch('/upload', {
+            const response = await fetch(`${BACKEND_URL}/upload`, {
                 method: 'POST',
                 body: formData
             });
@@ -154,9 +150,9 @@ class ImageUpscaler {
         const interval = setInterval(() => {
             progress += Math.random() * 15;
             if (progress > 90) progress = 90;
-            
+
             this.progressFill.style.width = progress + '%';
-            
+
             if (progress < 30) {
                 this.progressText.textContent = 'Uploading image...';
             } else if (progress < 60) {
@@ -188,10 +184,8 @@ class ImageUpscaler {
     }
 
     showResults(result) {
-  
-        this.originalImage.src = result.original_url;
-        this.upscaledImage.src = result.upscaled_url;
-
+        this.originalImage.src = `${BACKEND_URL}${result.original_url}`;
+        this.upscaledImage.src = `${BACKEND_URL}${result.upscaled_url}`;
 
         this.originalInfo.innerHTML = `
             <div><strong>Dimensions:</strong> ${result.original_dimensions[0]} × ${result.original_dimensions[1]}</div>
@@ -204,12 +198,10 @@ class ImageUpscaler {
             <div><strong>Scale Factor:</strong> ${result.scale_factor}x</div>
         `;
 
-    
         this.downloadBtn.onclick = () => {
-            window.open(result.download_url, '_blank');
+            window.open(`${BACKEND_URL}${result.download_url}`, '_blank');
         };
 
- 
         this.resultsSection.style.display = 'block';
         this.resultsSection.classList.add('slide-up');
     }
@@ -217,7 +209,6 @@ class ImageUpscaler {
     resetUploader() {
         this.selectedFile = null;
         this.uploadBtn.disabled = true;
-        
 
         const uploadContent = this.uploadArea.querySelector('.upload-content');
         uploadContent.innerHTML = `
@@ -229,10 +220,7 @@ class ImageUpscaler {
             </div>
         `;
 
-       
         this.fileInput.value = '';
-
-      
         this.uploadSection.style.display = 'block';
         this.resultsSection.style.display = 'none';
         this.progressSection.style.display = 'none';
@@ -249,57 +237,58 @@ class ImageUpscaler {
     }
 }
 
-
 document.addEventListener('DOMContentLoaded', () => {
     new ImageUpscaler();
 });
 
-
+// ------------------------------
+// Extra bottom listener (cleaned)
+// ------------------------------
 document.getElementById('uploadBtn').addEventListener('click', async () => {
-  const fileInput = document.getElementById('fileInput');
-  const scaleSelect = document.getElementById('scaleSelect');
-  const file = fileInput.files[0];
-  const scale = scaleSelect.value;
+    const fileInput = document.getElementById('fileInput');
+    const scaleSelect = document.getElementById('scaleSelect');
+    const file = fileInput.files[0];
+    const scale = scaleSelect.value;
 
-  if (!file) return alert("Please select a file");
+    if (!file) return alert("Please select a file");
 
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('scale_factor', scale);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('scale_factor', scale);
 
-  document.getElementById('progressSection').style.display = 'block';
+    document.getElementById('progressSection').style.display = 'block';
 
-  try {
-    const res = await fetch('/upload', {
-      method: 'POST',
-      body: formData
-    });
+    try {
+        const res = await fetch(`${BACKEND_URL}/upload`, {
+            method: 'POST',
+            body: formData
+        });
 
-    const data = await res.json();
+        const data = await res.json();
 
-    if (data.error) {
-      document.getElementById('errorMessage').textContent = data.error;
-      document.getElementById('errorModal').style.display = 'block';
-      document.getElementById('progressSection').style.display = 'none';
-      return;
+        if (data.error) {
+            document.getElementById('errorMessage').textContent = data.error;
+            document.getElementById('errorModal').style.display = 'block';
+            document.getElementById('progressSection').style.display = 'none';
+            return;
+        }
+
+        document.getElementById('progressSection').style.display = 'none';
+        document.getElementById('resultsSection').style.display = 'block';
+
+        document.getElementById('originalImage').src = `${BACKEND_URL}${data.original_url}`;
+        document.getElementById('upscaledImage').src = `${BACKEND_URL}${data.upscaled_url}`;
+        document.getElementById('downloadBtn').onclick = () => {
+            window.location.href = `${BACKEND_URL}${data.download_url}`;
+        };
+
+        document.getElementById('originalInfo').textContent =
+            `Size: ${(data.original_size / 1024).toFixed(2)} KB, Dimensions: ${data.original_dimensions}`;
+        document.getElementById('upscaledInfo').textContent =
+            `Size: ${(data.upscaled_size / 1024).toFixed(2)} KB, Dimensions: ${data.upscaled_dimensions}`;
+
+    } catch (err) {
+        document.getElementById('errorMessage').textContent = 'Something went wrong';
+        document.getElementById('errorModal').style.display = 'block';
     }
-
-    document.getElementById('progressSection').style.display = 'none';
-    document.getElementById('resultsSection').style.display = 'block';
-
-    document.getElementById('originalImage').src = data.original_url;
-    document.getElementById('upscaledImage').src = data.upscaled_url;
-    document.getElementById('downloadBtn').onclick = () => {
-      window.location.href = data.download_url;
-    };
-
-    document.getElementById('originalInfo').textContent =
-      `Size: ${(data.original_size / 1024).toFixed(2)} KB, Dimensions: ${data.original_dimensions}`;
-    document.getElementById('upscaledInfo').textContent =
-      `Size: ${(data.upscaled_size / 1024).toFixed(2)} KB, Dimensions: ${data.upscaled_dimensions}`;
-
-  } catch (err) {
-    document.getElementById('errorMessage').textContent = 'Something went wrong';
-    document.getElementById('errorModal').style.display = 'block';
-  }
 });

@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# uploads and local runtime
+/static/uploads/
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# other
+node_modules/
