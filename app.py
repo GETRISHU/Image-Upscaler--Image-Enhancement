@@ -3,9 +3,11 @@ import uuid
 from flask import Flask, request, jsonify, send_file, redirect
 from werkzeug.utils import secure_filename
 from PIL import Image, ImageFilter
+from flask_cors import CORS
 
 # Initialize Flask app
 app = Flask(__name__)
+CORS(app)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB max upload size
 
