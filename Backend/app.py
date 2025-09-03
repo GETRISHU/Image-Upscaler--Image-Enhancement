@@ -48,7 +48,7 @@ def upscale_image(image_path, scale_factor):
 def index():
     """Redirect root to frontend page"""
     # Replace this with your actual Netlify frontend link
-    return redirect("https://your-frontend.netlify.app")
+    return redirect("https://frontendimageupscaler.netlify.app/")
 
 
 @app.route('/upload', methods=['POST'])
