@@ -1,5 +1,5 @@
 // 🌐 Change this to your Render backend URL
-const BACKEND_URL = "https://your-backend.onrender.com";
+const BACKEND_URL = "https://image-upscaler-image-enhancement.onrender.com";
 
 class ImageUpscaler {
     constructor() {
