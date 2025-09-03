@@ -139,7 +139,7 @@ class ImageUpscaler {
             }
         } catch (error) {
             console.error('Upload error:', error);
-            this.showError('Network error. Server Problem.', error);
+            this.showError('Network error. Server Problem.render didn\'t Allow Above 5MB.', error);
         } finally {
             this.hideProgress();
         }
