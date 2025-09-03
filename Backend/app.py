@@ -7,7 +7,9 @@ from flask_cors import CORS
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # Allow frontend (Netlify) to talk to backend
+
+# Config
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB max upload size
 
@@ -27,17 +29,14 @@ def upscale_image(image_path, scale_factor):
     """Upscale image using Pillow with high-quality resampling"""
     try:
         with Image.open(image_path) as img:
-            # Convert if not RGB
             if img.mode in ('RGBA', 'LA', 'P'):
                 img = img.convert('RGB')
 
-            # Resize with LANCZOS filter
             width, height = img.size
             new_width = int(width * scale_factor)
             new_height = int(height * scale_factor)
-            upscaled = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
 
-            # Apply sharpening filter
+            upscaled = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
             upscaled = upscaled.filter(ImageFilter.UnsharpMask(radius=0.5, percent=150, threshold=3))
             return upscaled
     except Exception as e:
@@ -48,7 +47,8 @@ def upscale_image(image_path, scale_factor):
 @app.route('/')
 def index():
     """Redirect root to frontend page"""
-    return redirect("https://vebnox.com/imgups.html")
+    # Replace this with your actual Netlify frontend link
+    return redirect("https://your-frontend.netlify.app")
 
 
 @app.route('/upload', methods=['POST'])
@@ -67,7 +67,7 @@ def upload_file():
         if not allowed_file(file.filename):
             return jsonify({'error': 'Invalid file type. Use PNG, JPG, JPEG, or WebP.'}), 400
 
-        # Save original
+        # Save original file
         filename = secure_filename(file.filename)
         unique_id = str(uuid.uuid4())
         file_extension = filename.rsplit('.', 1)[1].lower()
@@ -84,7 +84,7 @@ def upload_file():
         upscaled_path = os.path.join(app.config['UPLOAD_FOLDER'], upscaled_filename)
         upscaled_image.save(upscaled_path, quality=95, optimize=True)
 
-        # Get file stats
+        # File info
         original_size = os.path.getsize(original_path)
         upscaled_size = os.path.getsize(upscaled_path)
         with Image.open(original_path) as orig_img:
