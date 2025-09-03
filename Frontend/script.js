@@ -1,4 +1,4 @@
-// 🌐 Change this to your Render backend URL
+
 const BACKEND_URL = "https://image-upscaler-image-enhancement.onrender.com";
 
 class ImageUpscaler {
@@ -139,7 +139,7 @@ class ImageUpscaler {
             }
         } catch (error) {
             console.error('Upload error:', error);
-            this.showError('Network error. Please check your connection and try again.');
+            this.showError('Network error. Server Problem.', error);
         } finally {
             this.hideProgress();
         }
@@ -239,56 +239,4 @@ class ImageUpscaler {
 
 document.addEventListener('DOMContentLoaded', () => {
     new ImageUpscaler();
-});
-
-// ------------------------------
-// Extra bottom listener (cleaned)
-// ------------------------------
-document.getElementById('uploadBtn').addEventListener('click', async () => {
-    const fileInput = document.getElementById('fileInput');
-    const scaleSelect = document.getElementById('scaleSelect');
-    const file = fileInput.files[0];
-    const scale = scaleSelect.value;
-
-    if (!file) return alert("Please select a file");
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('scale_factor', scale);
-
-    document.getElementById('progressSection').style.display = 'block';
-
-    try {
-        const res = await fetch(`${BACKEND_URL}/upload`, {
-            method: 'POST',
-            body: formData
-        });
-
-        const data = await res.json();
-
-        if (data.error) {
-            document.getElementById('errorMessage').textContent = data.error;
-            document.getElementById('errorModal').style.display = 'block';
-            document.getElementById('progressSection').style.display = 'none';
-            return;
-        }
-
-        document.getElementById('progressSection').style.display = 'none';
-        document.getElementById('resultsSection').style.display = 'block';
-
-        document.getElementById('originalImage').src = `${BACKEND_URL}${data.original_url}`;
-        document.getElementById('upscaledImage').src = `${BACKEND_URL}${data.upscaled_url}`;
-        document.getElementById('downloadBtn').onclick = () => {
-            window.location.href = `${BACKEND_URL}${data.download_url}`;
-        };
-
-        document.getElementById('originalInfo').textContent =
-            `Size: ${(data.original_size / 1024).toFixed(2)} KB, Dimensions: ${data.original_dimensions}`;
-        document.getElementById('upscaledInfo').textContent =
-            `Size: ${(data.upscaled_size / 1024).toFixed(2)} KB, Dimensions: ${data.upscaled_dimensions}`;
-
-    } catch (err) {
-        document.getElementById('errorMessage').textContent = 'Something went wrong';
-        document.getElementById('errorModal').style.display = 'block';
-    }
 });

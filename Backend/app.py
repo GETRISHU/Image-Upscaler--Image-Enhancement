@@ -30,11 +30,8 @@ app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
 app.config["UPLOAD_FOLDER"] = str(UPLOAD_DIR)
 
 # Configure CORS: allow only your frontend origin if provided, else allow none (safe default)
-if FRONTEND_URL:
-    CORS(app, origins=[FRONTEND_URL])
-else:
-    # If FRONTEND_URL not set, still allow all origins for quick testing — but set FRONTEND_URL in production!
-    CORS(app)
+CORS(app, origins=[FRONTEND_URL])
+
 
 # Logging
 logging.basicConfig(
